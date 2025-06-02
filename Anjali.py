@@ -1,61 +1,58 @@
-
 import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Set Streamlit page configuration
-st.set_page_config(page_title="Mutual Funds Explorer", layout="wide")
+# Set Streamlit page settings
+st.set_page_config(page_title="Mutual Funds Performance", layout="wide")
 
 # Title
 st.title("📊 Mutual Funds Performance in India")
 
-# Load data from GitHub (🔁 Replace this with your actual raw URL)
-DATA_URL = "https://raw.githubusercontent.com/yourusername/yourrepo/main/Datasets/mutual_funds_india.csv"
-
-# Load and clean the data
+# Load local CSV file
 @st.cache_data
-def load_data(url):
-    df = pd.read_csv(url)
-    df.columns = df.columns.str.strip().str.replace(" ", "", regex=False)
+def load_data():
+    df = pd.read_csv("Datasets/mutual_funds_india.csv")  # Adjust path if needed
+    df.columns = df.columns.str.replace(" ", "")  # Remove spaces from column names
     return df
 
-# Load dataset
+# Load data
 try:
-    df = load_data(DATA_URL)
-except Exception as e:
-    st.error(f"Failed to load data from URL. Error: {e}")
+    df = load_data()
+except FileNotFoundError:
+    st.error("❌ CSV file not found. Please check the file path: `Datasets/mutual_funds_india.csv`.")
     st.stop()
 
-# Sidebar: Filter options
+# Sidebar filters
 st.sidebar.header("🔍 Filter Options")
 
-# Category selection
+# Category filter
 categories = df["category"].dropna().unique()
 selected_category = st.sidebar.selectbox("Select Category", sorted(categories))
 
-# Filter by selected category
-df_category = df[df["category"] == selected_category]
+# Filter by category
+filtered_df = df[df["category"] == selected_category]
 
-# AMC selection
-amcs = df_category["AMC_name"].dropna().unique()
+# AMC filter
+amcs = filtered_df["AMC_name"].dropna().unique()
 selected_amc = st.sidebar.selectbox("Select AMC", sorted(amcs))
 
-# Filter by selected AMC
-df_filtered = df_category[df_category["AMC_name"] == selected_amc]
+# Filter by AMC
+final_df = filtered_df[filtered_df["AMC_name"] == selected_amc]
 
-# Show filtered data
-st.subheader(f"🎯 Funds in Category: **{selected_category}**, AMC: **{selected_amc}**")
-st.dataframe(df_filtered[["MutualFundName", "return_1yr"]].reset_index(drop=True), use_container_width=True)
+# Display data table
+st.subheader(f"📋 Mutual Funds in Category: **{selected_category}** | AMC: **{selected_amc}**")
+st.dataframe(final_df[["MutualFundName", "return_1yr"]].reset_index(drop=True), use_container_width=True)
 
-# Plot bar chart
-if not df_filtered.empty:
-    st.subheader("📈 1-Year Return Comparison")
+# Bar Chart
+if not final_df.empty:
+    st.subheader("📈 1-Year Returns")
     fig, ax = plt.subplots(figsize=(12, 6))
-    sns.barplot(data=df_filtered, x="MutualFundName", y="return_1yr", palette="Blues_d", ax=ax)
-    ax.set_ylabel("1-Year Return (%)")
+    sns.barplot(data=final_df, x="MutualFundName", y="return_1yr", palette="winter", ax=ax)
+    ax.set_ylabel("Return (%)")
     ax.set_xlabel("Mutual Fund")
     plt.xticks(rotation=90)
     st.pyplot(fig)
 else:
-    st.warning("⚠️ No data available for the selected filters.")
+    st.warning("⚠️ No mutual funds found for this selection.")
+
