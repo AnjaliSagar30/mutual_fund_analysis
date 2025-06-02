@@ -12,7 +12,7 @@ st.title("📊 Mutual Funds Performance in India")
 # Load local CSV file
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Datasets/mutual_funds_india.csv")  # Adjust path if needed
+    df = pd.read_csv("mutual_funds_india.csv")  # Adjust path if needed
     df.columns = df.columns.str.replace(" ", "")  # Remove spaces from column names
     return df
 
