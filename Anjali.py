@@ -10,7 +10,7 @@ st.set_page_config(page_title="Mutual Funds Explorer", layout="wide")
 st.title("📊 Mutual Funds Performance in India")
 
 # Load the dataset from GitHub (replace with your raw GitHub CSV URL)
-url = "https://github.com/AnjaliSagar30/mutual_fund_analysis/blob/main/mutual_funds_india.csv
+url = "https://github.com/AnjaliSagar30/mutual_fund_analysis/blob/main/mutual_funds_india.csv"
 df.columns = df.columns.str.replace(" ", "")  # Remove spaces in column names
 
 # Sidebar Filters
