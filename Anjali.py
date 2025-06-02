@@ -10,8 +10,7 @@ st.set_page_config(page_title="Mutual Funds Explorer", layout="wide")
 st.title("📊 Mutual Funds Performance in India")
 
 # Load dataset from GitHub raw URL
-DATA_URL = "https://raw.githubusercontent.com/yourusername/yourrepo/main/Datasets/mutual_funds_india.csv"
-
+DATA_URL = "https://github.com/AnjaliSagar30/mutual_fund_analysis/blob/main/mutual_funds_india.csv"
 @st.cache_data
 def load_data(url):
     df = pd.read_csv(url)
